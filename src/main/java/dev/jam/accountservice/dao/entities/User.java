@@ -18,7 +18,7 @@ public class User {
     private String password;
     private String email;
     private Role role;
-//    private boolean active;
+
     @OneToOne(mappedBy = "user")
     private Company company;
 
