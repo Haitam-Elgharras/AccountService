@@ -1,29 +1,26 @@
 package dev.jam.accountservice.dao.entities;
 
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Industry {
+public class Review {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String label;
+    private String comment;
+    private int rating;
 
-    @OneToMany(mappedBy = "industry")
+    @ManyToOne
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private List<Company> companies;
+    private User user;
 
-    public Industry(String label) {
-        this.label = label;
-    }
-
+    @ManyToOne
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private Event event;
 }

@@ -1,0 +1,33 @@
+
+## User
+# get all users
+/users
+# get user by id
+/users/{id}
+
+## Company
+# get all companies
+/companies
+
+# get company by id
+/companies/{id}
+
+# get company by user id
+/companies/user/{id}
+
+# Update company by id
+/companies/{id}
+
+# Delete company by id
+/companies/{id}
+
+# add company to user
+/companies/{userId}
+
+# add industry to company
+/companies/{companyId}/industry/{industryId}
+
+# remove industry from company
+/companies/{companyId}/industry/{industryId}
+
+

@@ -24,9 +24,17 @@ public class Event {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
 
-    @ManyToMany(mappedBy = "events")
-    private List<User> users;
+    @OneToMany(mappedBy = "event")
+    private List<Review> reviews;
 
     @ManyToOne
     private Company company;
+
+    @ManyToMany
+    @JoinTable(
+            name = "event_category",
+            joinColumns = @JoinColumn(name = "event_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    private List<Category> categories;
 }

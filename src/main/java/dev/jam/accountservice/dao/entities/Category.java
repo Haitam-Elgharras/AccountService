@@ -1,6 +1,5 @@
 package dev.jam.accountservice.dao.entities;
 
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -13,17 +12,16 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Industry {
+public class Category {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String label;
+    private String name;
 
-    @OneToMany(mappedBy = "industry")
+    @ManyToMany(mappedBy = "categories")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private List<Company> companies;
+    private List<Event> events;
 
-    public Industry(String label) {
-        this.label = label;
+    public Category(String name) {
+        this.name = name;
     }
-
 }

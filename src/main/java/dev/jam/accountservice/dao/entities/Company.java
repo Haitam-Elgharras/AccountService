@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
@@ -19,7 +20,18 @@ public class Company {
     private String tel;
     private String email;
     private String description;
+//    private String logoImageUrl;
+
+    public Company(String name, String address, String tel, String email, String description) {
+        this.name = name;
+        this.address = address;
+        this.tel = tel;
+        this.email = email;
+        this.description = description;
+    }
+
     @OneToOne
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private User user;
 
     @OneToMany(mappedBy = "company")
@@ -31,5 +43,17 @@ public class Company {
 
     @ManyToOne
     private Industry industry;
+
+    @Override
+    public String toString() {
+        return "Company{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                ", tel='" + tel + '\'' +
+                ", email='" + email + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
 
 }
