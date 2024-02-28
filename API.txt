@@ -1,9 +1,9 @@
 
 ## User
-# get all users
-/users
-# get user by id
-/users/{id}
+# get all userAccounts
+/userAccounts
+# get userAccount by id
+/userAccounts/{id}
 
 ## Company
 # get all companies
@@ -12,17 +12,17 @@
 # get company by id
 /companies/{id}
 
-# get company by user id
-/companies/user/{id}
+# get company by userAccount id
+/companies/userAccount/{id}
 
 # Update company by id
 /companies/{id}
 
-# Delete company from user by id
+# Delete company from userAccount by id
 /companies/{id}
 
-# add company to user
-/companies/user/{userId}
+# add company to userAccount
+/companies/userAccount/{userId}
 
 # add industry to company
 /companies/{companyId}/industry/{industryId}

@@ -53,7 +53,7 @@ public class CompanyServiceImpl implements ICompanyService {
 
     @Override
     public Company getCompanyByUserEmail(String email) {
-        return companyRepository.findByUserEmail(email).orElse(null);
+        return companyRepository.findByUserAccountEmail(email).orElse(null);
     }
 
     @Override
@@ -67,7 +67,7 @@ public class CompanyServiceImpl implements ICompanyService {
 
     @Override
     public Company getCompanyByUserId(long userId) {
-        return companyRepository.findByUserId(userId).orElse(null);
+        return companyRepository.findByUserAccountId(userId).orElse(null);
     }
 
     @Override

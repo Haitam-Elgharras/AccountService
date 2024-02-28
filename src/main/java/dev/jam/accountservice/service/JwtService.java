@@ -1,7 +1,7 @@
 package dev.jam.accountservice.service;
 
 import dev.jam.accountservice.config.JwtConfig;
-import dev.jam.accountservice.dao.entities.User;
+import dev.jam.accountservice.dao.entities.UserAccount;
 import dev.jam.accountservice.enumerations.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -41,9 +41,9 @@ public class JwtService implements IJwtService {
     }
 
     @Override
-    public String generateToken(User user) {
-        return generateToken(Map.of("role", user.getRole(), "id", user.getId(),
-                "email", user.getEmail(),"name",user.getName()), user);
+    public String generateToken(UserAccount userAccount) {
+        return generateToken(Map.of("role", userAccount.getRole(), "id", userAccount.getId(),
+                "email", userAccount.getEmail(),"name", userAccount.getName()), userAccount);
     }
 
     @Override
@@ -72,32 +72,32 @@ public class JwtService implements IJwtService {
     }
 
     @Override
-    public String generateAccessToken(User user) {
+    public String generateAccessToken(UserAccount userAccount) {
         return generateToken(
-                Map.of("role", user.getRole(),
-                        "id", user.getId(),
-                        "email", user.getEmail()),
-                user.getEmail(),
+                Map.of("role", userAccount.getRole(),
+                        "id", userAccount.getId(),
+                        "email", userAccount.getEmail()),
+                userAccount.getEmail(),
                 jwtConfig.getSignInKey(),
                 jwtConfig.getAccessTokenExpiredAfter()
         );
     }
 
     @Override
-    public User getUserFromToken(String jwt) {
-        User user = new User();
+    public UserAccount getUserFromToken(String jwt) {
+        UserAccount userAccount = new UserAccount();
         Claims claims = extractAllClaims(jwt);
-        user.setId(Long.parseLong(claims.get("id").toString()));
-        user.setName(claims.getSubject());
-        user.setRole(Role.valueOf(claims.get("role").toString()));
-        return user;
+        userAccount.setId(Long.parseLong(claims.get("id").toString()));
+        userAccount.setName(claims.getSubject());
+        userAccount.setRole(Role.valueOf(claims.get("role").toString()));
+        return userAccount;
     }
 
     @Override
-    public User getAuthenticatedUser(){
+    public UserAccount getAuthenticatedUser(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication instanceof UsernamePasswordAuthenticationToken){
-            return (User) authentication.getPrincipal();
+            return (UserAccount) authentication.getPrincipal();
         }
         return null;
     }

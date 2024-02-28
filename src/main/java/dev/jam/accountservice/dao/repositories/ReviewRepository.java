@@ -10,7 +10,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     List<Review> findByRating(int rating);
 
     // find events by user id
-    List<Review> findByUserId(Long userId);
+    List<Review> findByUserAccountId(Long userId);
 
     // find events by event id
     List<Review> findByEventId(Long eventId);

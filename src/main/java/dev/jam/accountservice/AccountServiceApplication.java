@@ -1,23 +1,22 @@
 package dev.jam.accountservice;
 
 import dev.jam.accountservice.config.JwtConfig;
-import dev.jam.accountservice.dao.entities.Company;
 import dev.jam.accountservice.dao.entities.Industry;
-import dev.jam.accountservice.dao.entities.User;
 import dev.jam.accountservice.dao.entities.Category;
 import dev.jam.accountservice.dao.repositories.CategoryRepository;
 import dev.jam.accountservice.dao.repositories.IndustryRepository;
-import dev.jam.accountservice.enumerations.Role;
 import dev.jam.accountservice.service.CompanyServiceImpl;
 import dev.jam.accountservice.service.UserServiceImpl;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 @EnableConfigurationProperties(JwtConfig.class)
+@EnableFeignClients
 public class AccountServiceApplication {
 
     public static void main(String[] args) {

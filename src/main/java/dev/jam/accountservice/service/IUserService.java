@@ -1,7 +1,7 @@
 package dev.jam.accountservice.service;
 
 import dev.jam.accountservice.dao.entities.Company;
-import dev.jam.accountservice.dao.entities.User;
+import dev.jam.accountservice.dao.entities.UserAccount;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
@@ -9,16 +9,16 @@ import java.util.List;
 
 public interface IUserService extends UserDetailsService {
 
-    User loadUserByUsername(String username) throws UsernameNotFoundException;
+    UserAccount loadUserByUsername(String username) throws UsernameNotFoundException;
 
-    User addUser(User user);
+    UserAccount addUser(UserAccount userAccount);
     void deleteUserById(long id);
-    User updateUser(User user);
+    UserAccount updateUser(UserAccount userAccount);
 
-    User getUserById(long id);
-    List<User> getAllUsers();
+    UserAccount getUserById(long id);
+    List<UserAccount> getAllUsers();
 
-    User getUserByEmail(String email);
+    UserAccount getUserByEmail(String email);
     void addCompanyToUser(long userId, Company company);
     void removeCompanyFromUser(long userId);
 

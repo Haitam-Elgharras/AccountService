@@ -16,7 +16,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class User implements UserDetails {
+public class UserAccount implements UserDetails {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
@@ -27,10 +27,10 @@ public class User implements UserDetails {
     private boolean active;
 //    private String ProfileImageUrl;
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "userAccount")
     private Company company;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "userAccount")
     private List<Review> reviews;
 
     @Override

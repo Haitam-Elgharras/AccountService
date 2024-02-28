@@ -3,7 +3,6 @@ package dev.jam.accountservice.web;
 import dev.jam.accountservice.dao.entities.Category;
 import dev.jam.accountservice.dao.entities.Company;
 import dev.jam.accountservice.dao.entities.Event;
-import dev.jam.accountservice.dao.entities.Review;
 import dev.jam.accountservice.dao.repositories.CategoryRepository;
 import dev.jam.accountservice.exceptions.EventNotFoundException;
 import dev.jam.accountservice.exceptions.UserAccessDeniedException;
@@ -85,7 +84,7 @@ public class EventController {
         // get authenticated user
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String authenticatedUsername = auth.getName();
-        if (!existingEvent.getCompany().getUser().getEmail().equals(authenticatedUsername)) {
+        if (!existingEvent.getCompany().getUserAccount().getEmail().equals(authenticatedUsername)) {
             throw new UserAccessDeniedException("Access Denied");
         }
 
@@ -105,7 +104,7 @@ public class EventController {
         // get authenticated user
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String authenticatedUsername = auth.getName();
-        if (!existingEvent.getCompany().getUser().getEmail().equals(authenticatedUsername)) {
+        if (!existingEvent.getCompany().getUserAccount().getEmail().equals(authenticatedUsername)) {
             throw new UserAccessDeniedException("Access Denied");
         }
 

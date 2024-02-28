@@ -1,7 +1,6 @@
 package dev.jam.accountservice.security;
 
-import dev.jam.accountservice.dao.entities.User;
-import dev.jam.accountservice.service.IAuthenticationService;
+import dev.jam.accountservice.dao.entities.UserAccount;
 import dev.jam.accountservice.service.IJwtService;
 import dev.jam.accountservice.service.IUserService;
 import jakarta.servlet.FilterChain;
@@ -43,12 +42,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         jwt = authHeader.substring(7);
         userEmail = jwtService.extractUsername(jwt);
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            User user = userService.loadUserByUsername(userEmail);
-            if (jwtService.isTokenValid(jwt, user)) {
+            UserAccount userAccount = userService.loadUserByUsername(userEmail);
+            if (jwtService.isTokenValid(jwt, userAccount)) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        user,
+                        userAccount,
                         null,
-                        user.getAuthorities());
+                        userAccount.getAuthorities());
                 authToken.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails(request)
                 );

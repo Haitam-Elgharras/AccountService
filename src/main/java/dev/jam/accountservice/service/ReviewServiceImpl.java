@@ -2,7 +2,7 @@ package dev.jam.accountservice.service;
 
 import dev.jam.accountservice.dao.entities.Event;
 import dev.jam.accountservice.dao.entities.Review;
-import dev.jam.accountservice.dao.entities.User;
+import dev.jam.accountservice.dao.entities.UserAccount;
 import dev.jam.accountservice.dao.repositories.ReviewRepository;
 import dev.jam.accountservice.dao.repositories.UserRepository;
 import dev.jam.accountservice.dao.repositories.EventRepository;
@@ -30,7 +30,7 @@ public class ReviewServiceImpl implements IReviewService{
 
     @Override
     public Review addReviewToEvent(Long eventId, Long userId, Review review) {
-        Optional<User> user = userRepository.findById(userId);
+        Optional<UserAccount> user = userRepository.findById(userId);
         if (user.isEmpty())
             throw new UserNotFoundException("User with id " + userId + " not found");
 
@@ -38,7 +38,7 @@ public class ReviewServiceImpl implements IReviewService{
         if (event.isEmpty())
             throw new EventNotFoundException("Event with id " + eventId + " not found");
 
-        review.setUser(user.get());
+        review.setUserAccount(user.get());
         review.setEvent(event.get());
         return reviewRepository.save(review);
     }
@@ -56,6 +56,7 @@ public class ReviewServiceImpl implements IReviewService{
 
         reviewToUpdate.setRating(review.getRating());
         reviewToUpdate.setComment(review.getComment());
+
         return reviewRepository.save(reviewToUpdate);
     }
 
@@ -71,7 +72,7 @@ public class ReviewServiceImpl implements IReviewService{
 
     @Override
     public List<Review> getReviewByUserId(Long userId) {
-        return reviewRepository.findByUserId(userId);
+        return reviewRepository.findByUserAccountId(userId);
     }
 
     @Override

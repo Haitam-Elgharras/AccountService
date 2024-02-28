@@ -32,7 +32,7 @@ public class Company {
 
     @OneToOne
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private User user;
+    private UserAccount userAccount;
 
     @OneToMany(mappedBy = "company")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

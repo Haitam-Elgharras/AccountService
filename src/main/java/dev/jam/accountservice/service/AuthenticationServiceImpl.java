@@ -1,7 +1,7 @@
 package dev.jam.accountservice.service;
 
 
-import dev.jam.accountservice.dao.entities.User;
+import dev.jam.accountservice.dao.entities.UserAccount;
 import dev.jam.accountservice.enumerations.Role;
 import dev.jam.accountservice.service.dtos.AuthenticationRequest;
 import dev.jam.accountservice.service.dtos.AuthenticationResponse;
@@ -15,7 +15,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
@@ -34,41 +33,41 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
                         request.getPassword()
                 )
         );
-        User user = userService.loadUserByUsername(request.getEmail());
-        if (user == null)
+        UserAccount userAccount = userService.loadUserByUsername(request.getEmail());
+        if (userAccount == null)
             throw new BadCredentialsException("Unauthorized");
 
-        String jwtToken = jwtService.generateAccessToken(user);
+        String jwtToken = jwtService.generateAccessToken(userAccount);
         return new AuthenticationResponse(jwtToken);
     }
 
     @Override
     public AuthenticationResponse register(RegisterRequest request) {
-        User user = new User();
-        user.setName(request.getName());
-        user.setEmail(request.getEmail());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRole(Role.ROLE_USER);
-        userService.addUser(user);
-        String jwtToken = jwtService.generateToken(user);
+        UserAccount userAccount = new UserAccount();
+        userAccount.setName(request.getName());
+        userAccount.setEmail(request.getEmail());
+        userAccount.setPassword(passwordEncoder.encode(request.getPassword()));
+        userAccount.setRole(Role.ROLE_USER);
+        userService.addUser(userAccount);
+        String jwtToken = jwtService.generateToken(userAccount);
         return new AuthenticationResponse(jwtToken);
     }
 
     @Override
     public AuthenticationResponse updateCredentials(DTOUserCredentials userCredentials) {
-        User authUser = jwtService.getAuthenticatedUser();
-        if (authUser != null) {
-            User user = userService.loadUserByUsername(jwtService.getAuthenticatedUser().getUsername());
+        UserAccount authUserAccount = jwtService.getAuthenticatedUser();
+        if (authUserAccount != null) {
+            UserAccount userAccount = userService.loadUserByUsername(jwtService.getAuthenticatedUser().getUsername());
 
-            boolean passwordsMatchers = (new BCryptPasswordEncoder()).matches(userCredentials.getOldPassword(), user.getPassword());
+            boolean passwordsMatchers = (new BCryptPasswordEncoder()).matches(userCredentials.getOldPassword(), userAccount.getPassword());
             if (!passwordsMatchers)
                 throw new BadCredentialsException("Unauthorized");
             //
-            user.setEmail(userCredentials.getEmail());
-            user.setPassword(userCredentials.getPassword());
+            userAccount.setEmail(userCredentials.getEmail());
+            userAccount.setPassword(userCredentials.getPassword());
             //
             String accessToken = jwtService.generateAccessToken(
-                    userService.updateUser(user)
+                    userService.updateUser(userAccount)
             );
             return new AuthenticationResponse(accessToken);
         }

@@ -1,7 +1,7 @@
 package dev.jam.accountservice.web;
 
 import dev.jam.accountservice.dao.entities.Review;
-import dev.jam.accountservice.dao.entities.User;
+import dev.jam.accountservice.dao.entities.UserAccount;
 import dev.jam.accountservice.exceptions.UserAccessDeniedException;
 import dev.jam.accountservice.service.IReviewService;
 import dev.jam.accountservice.service.IUserService;
@@ -42,7 +42,7 @@ public class ReviewController {
         if (review == null)
             throw new RuntimeException("Review with id " + id + " not found");
 
-        if (!Objects.equals(review.getUser().getId(), userId))
+        if (!Objects.equals(review.getUserAccount().getId(), userId))
             throw new UserAccessDeniedException("You are not allowed to delete this review");
 
         reviewService.removeReviewFromEvent(id);
@@ -57,7 +57,7 @@ public class ReviewController {
         if (reviewToUpdate == null)
             throw new RuntimeException("Review with id " + id + " not found");
 
-        if (!Objects.equals(reviewToUpdate.getUser().getId(), userId))
+        if (!Objects.equals(reviewToUpdate.getUserAccount().getId(), userId))
             throw new UserAccessDeniedException("You are not allowed to update this review");
 
         return reviewService.updateReview(id, review);
@@ -89,8 +89,8 @@ public class ReviewController {
 
     private Long getAuthUserId() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userService.getUserByEmail(auth.getName());
-        return user.getId();
+        UserAccount userAccount = userService.getUserByEmail(auth.getName());
+        return userAccount.getId();
     }
 
 }

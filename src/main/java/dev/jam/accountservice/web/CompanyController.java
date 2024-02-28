@@ -1,21 +1,18 @@
 package dev.jam.accountservice.web;
 
 import dev.jam.accountservice.dao.entities.Company;
-import dev.jam.accountservice.dao.entities.User;
+import dev.jam.accountservice.dao.entities.UserAccount;
 import dev.jam.accountservice.enumerations.Role;
 import dev.jam.accountservice.exceptions.CompanyNotFoundException;
 import dev.jam.accountservice.exceptions.UserAccessDeniedException;
 import dev.jam.accountservice.exceptions.UserNotFoundException;
 import dev.jam.accountservice.service.ICompanyService;
 import dev.jam.accountservice.service.IUserService;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
-import dev.jam.accountservice.dao.repositories.UserRepository;
 
 import java.util.List;
 
@@ -69,17 +66,17 @@ public class CompanyController {
         String authenticatedUsername = auth.getName();
 
         // check if the authenticated user is the owner of the company
-        if (!company.getUser().getUsername().equals(authenticatedUsername)) {
+        if (!company.getUserAccount().getUsername().equals(authenticatedUsername)) {
             System.out.println("Authenticated user is not the owner of the company");
             throw new UserAccessDeniedException("Access Denied");
         }
 
         companyService.deleteCompanyById(companyId);
         // remove role from user
-        User user = userService.getUserByEmail(authenticatedUsername);
-        user.setRole(Role.ROLE_USER);
+        UserAccount userAccount = userService.getUserByEmail(authenticatedUsername);
+        userAccount.setRole(Role.ROLE_USER);
 
-        userService.updateUser(user);
+        userService.updateUser(userAccount);
     }
 
     @PutMapping("/{companyId}")
@@ -106,15 +103,15 @@ public class CompanyController {
     @PostMapping("/user/{userId}")
     @PreAuthorize("hasRole('ROLE_USER')")
     public Company addCompanyToUser(@PathVariable Long userId, @RequestBody Company company) {
-        User user = userService.getUserById(userId);
-        if (user == null)
+        UserAccount userAccount = userService.getUserById(userId);
+        if (userAccount == null)
             throw new UserNotFoundException("User with id " + userId + " not found");
 
-        company.setUser(user);
+        company.setUserAccount(userAccount);
         companyService.addCompany(company);
 
         // add role to user
-        user.setRole(Role.ROLE_COMPANY_OWNER);
+        userAccount.setRole(Role.ROLE_COMPANY_OWNER);
 
         return company;
     }
@@ -122,13 +119,37 @@ public class CompanyController {
     @PostMapping("/{companyId}/industry/{industryId}")
     @PreAuthorize("hasRole('ROLE_COMPANY_OWNER')")
     public Company addIndustryToCompany(@PathVariable Long companyId, @PathVariable Long industryId) {
+// check if the auth user is the owner of the company
+        Company company = companyService.getCompanyById(companyId);
+        if (company == null)
+            throw new CompanyNotFoundException("Company with id " + companyId + " not found");
+
+        String authUsername= getAuthUsername();
+
+        if (!company.getUserAccount().getUsername().equals(authUsername))
+            throw new UserAccessDeniedException("Access Denied");
+
         return companyService.addIndustryToCompany(companyId, industryId);
+    }
+
+    private String getAuthUsername() {
+        // get authenticated user
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return auth.getName();
     }
 
     // delete industry from company
     @DeleteMapping("/{companyId}/industry/{industryId}")
     @PreAuthorize("hasRole('ROLE_COMPANY_OWNER')")
     public void deleteIndustryFromCompany(@PathVariable Long companyId, @PathVariable Long industryId) {
+        String authUsername= getAuthUsername();
+        Company company = companyService.getCompanyById(companyId);
+        if (company == null)
+            throw new CompanyNotFoundException("Company with id " + companyId + " not found");
+
+        if (!company.getUserAccount().getUsername().equals(authUsername))
+            throw new UserAccessDeniedException("Access Denied");
+
         companyService.deleteIndustryFromCompany(companyId, industryId);
     }
 

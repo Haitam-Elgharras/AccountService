@@ -1,13 +1,12 @@
 package dev.jam.accountservice.dao.repositories;
 
-import dev.jam.accountservice.dao.entities.User;
+import dev.jam.accountservice.dao.entities.UserAccount;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
 import java.util.Optional;
 
-public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByEmail(String email);
+public interface UserRepository extends JpaRepository<UserAccount, Long> {
+    Optional<UserAccount> findByEmail(String email);
 
-    Optional<User> findByName(String name);
+    Optional<UserAccount> findByName(String name);
 }

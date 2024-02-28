@@ -1,6 +1,6 @@
 package dev.jam.accountservice.service;
 
-import dev.jam.accountservice.dao.entities.User;
+import dev.jam.accountservice.dao.entities.UserAccount;
 import dev.jam.accountservice.dao.entities.Company;
 import dev.jam.accountservice.dao.repositories.UserRepository;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,8 +18,8 @@ public class UserServiceImpl implements IUserService{
     }
 
     @Override
-    public User addUser(User user) {
-        return userRepository.save(user);
+    public UserAccount addUser(UserAccount userAccount) {
+        return userRepository.save(userAccount);
     }
 
     @Override
@@ -28,51 +28,51 @@ public class UserServiceImpl implements IUserService{
     }
 
     @Override
-    public User updateUser(User user) {
-        return userRepository.save(user);
+    public UserAccount updateUser(UserAccount userAccount) {
+        return userRepository.save(userAccount);
     }
 
     @Override
-    public User getUserById(long id) {
+    public UserAccount getUserById(long id) {
         return userRepository.findById(id).orElse(null);
     }
 
     @Override
-    public List<User> getAllUsers() {
+    public List<UserAccount> getAllUsers() {
         return userRepository.findAll();
     }
 
 
     @Override
-    public User getUserByEmail(String email) {
+    public UserAccount getUserByEmail(String email) {
         return userRepository.findByEmail(email).orElse(null);
     }
 
     @Override
     public void addCompanyToUser(long userId, Company company) {
-        User user = userRepository.findById(userId).orElse(null);
-        if (user != null) {
-            user.setCompany(company);
-            userRepository.save(user);
+        UserAccount userAccount = userRepository.findById(userId).orElse(null);
+        if (userAccount != null) {
+            userAccount.setCompany(company);
+            userRepository.save(userAccount);
         }
         throw new RuntimeException("User not found");
     }
 
     @Override
     public void removeCompanyFromUser(long userId) {
-        User user = userRepository.findById(userId).orElse(null);
-        if (user != null) {
-            if(user.getCompany() == null)
+        UserAccount userAccount = userRepository.findById(userId).orElse(null);
+        if (userAccount != null) {
+            if(userAccount.getCompany() == null)
                 throw new RuntimeException("User has no company");
 
-            user.setCompany(null);
+            userAccount.setCompany(null);
             return;
         }
         throw new RuntimeException("User not found");
     }
 
     @Override
-    public User loadUserByUsername(String email) throws UsernameNotFoundException {
+    public UserAccount loadUserByUsername(String email) throws UsernameNotFoundException {
         System.out.println("reach for user with email: " + email);
         return userRepository.findByEmail(email)
                 .orElse(null);

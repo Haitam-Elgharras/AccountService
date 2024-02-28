@@ -1,7 +1,7 @@
 package dev.jam.accountservice.service;
 
 
-import dev.jam.accountservice.dao.entities.User;
+import dev.jam.accountservice.dao.entities.UserAccount;
 import dev.jam.accountservice.enumerations.Role;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -16,21 +16,21 @@ public interface IJwtService {
 
     Role getUserRole(String token);
 
-    String generateToken(User user);
+    String generateToken(UserAccount userAccount);
 
     String generateToken(Map<String, Object> extraClaims, UserDetails userDetails);
 
     String generateToken(Map<String, Object> extraClaims, String subject, Key secret, long expiredAfter);
 
-    String generateAccessToken(User user);
+    String generateAccessToken(UserAccount userAccount);
 
-    User getUserFromToken(String jwt);
+    UserAccount getUserFromToken(String jwt);
 
     // Helper methode to generate access and refresh tokens
     // to avoid redundancy in code
     //    AuthenticationResponse generateTokens(User user);
 
-    User getAuthenticatedUser();
+    UserAccount getAuthenticatedUser();
 
     // validate token
     Boolean isTokenValid(String token, UserDetails userDetails);

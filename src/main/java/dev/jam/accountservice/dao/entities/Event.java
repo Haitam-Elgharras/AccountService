@@ -1,5 +1,6 @@
 package dev.jam.accountservice.dao.entities;
 
+import dev.jam.accountservice.service.dtos.Location;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
