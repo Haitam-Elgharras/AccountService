@@ -97,6 +97,7 @@ public class CompanyController {
         if (companyDetails.getEmail() != null)
             company.setEmail(companyDetails.getEmail());
 
+        company.setId(companyId);
         companyService.updateCompany(company);
     }
 
