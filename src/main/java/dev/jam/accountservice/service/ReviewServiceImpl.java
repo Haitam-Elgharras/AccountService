@@ -53,7 +53,6 @@ public class ReviewServiceImpl implements IReviewService{
         Review reviewToUpdate = reviewRepository.findById(id).orElse(null);
         if (reviewToUpdate == null)
             return null;
-
         reviewToUpdate.setRating(review.getRating());
         reviewToUpdate.setComment(review.getComment());
 
