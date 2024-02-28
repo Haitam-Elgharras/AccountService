@@ -7,6 +7,7 @@ import dev.jam.accountservice.dao.entities.User;
 import dev.jam.accountservice.dao.entities.Category;
 import dev.jam.accountservice.dao.repositories.CategoryRepository;
 import dev.jam.accountservice.dao.repositories.IndustryRepository;
+import dev.jam.accountservice.enumerations.Role;
 import dev.jam.accountservice.service.CompanyServiceImpl;
 import dev.jam.accountservice.service.UserServiceImpl;
 import org.springframework.boot.SpringApplication;
@@ -29,22 +30,23 @@ public class AccountServiceApplication {
     ) {
         return (args) -> {
 
-            // populate some industries and categories of events
-//            categoryRepository.save(new Category("Technology"));
-//            categoryRepository.save(new Category("Business"));
-//            categoryRepository.save(new Category("Science"));
-//            categoryRepository.save(new Category("Health"));
-//            categoryRepository.save(new Category("Music"));
-//            categoryRepository.save(new Category("Food & Drink"));
-//            categoryRepository.save(new Category("Film & Media"));
-//
-//            industryRepository.save(new Industry("Technology"));
-//            industryRepository.save(new Industry("Business"));
-//            industryRepository.save(new Industry("Science"));
-//            industryRepository.save(new Industry("Health"));
-//            industryRepository.save(new Industry("Music"));
-//            industryRepository.save(new Industry("Food & Drink"));
-//            industryRepository.save(new Industry("Film & Media"));
+//             populate some industries and categories of events
+            categoryRepository.save(new Category("Technology"));
+            categoryRepository.save(new Category("Business"));
+            categoryRepository.save(new Category("Science"));
+            categoryRepository.save(new Category("Health"));
+            categoryRepository.save(new Category("Music"));
+            categoryRepository.save(new Category("Food & Drink"));
+            categoryRepository.save(new Category("Film & Media"));
+
+            industryRepository.save(new Industry("Technology"));
+            industryRepository.save(new Industry("Business"));
+            industryRepository.save(new Industry("Science"));
+            industryRepository.save(new Industry("Health"));
+            industryRepository.save(new Industry("Music"));
+            industryRepository.save(new Industry("Food & Drink"));
+            industryRepository.save(new Industry("Film & Media"));
+
 
 
         };

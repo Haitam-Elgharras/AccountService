@@ -52,6 +52,11 @@ public class CompanyServiceImpl implements ICompanyService {
     }
 
     @Override
+    public Company getCompanyByUserEmail(String email) {
+        return companyRepository.findByUserEmail(email).orElse(null);
+    }
+
+    @Override
     public void addEventToCompany(long companyId, Event event) {
         Company company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new CompanyNotFoundException("Company with id " + companyId + " not found"));

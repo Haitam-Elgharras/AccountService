@@ -13,6 +13,7 @@ public interface ICompanyService {
     List<Company> getAllCompanies();
     Company getCompanyById(long id);
     Company getCompanyByUserId(long userId);
+    Company getCompanyByUserEmail(String email);
     Company getCompanyByName(String name);
     void addEventToCompany(long companyId, Event event);
 

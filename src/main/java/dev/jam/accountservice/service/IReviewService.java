@@ -9,9 +9,10 @@ public interface IReviewService {
 
     void removeReviewFromEvent(Long reviewId);
 
-    Review updateReview(Review review);
 
     List<Review> getAllReviews();
+
+    Review updateReview(Long id, Review review);
 
     Review getReviewById(Long id);
 

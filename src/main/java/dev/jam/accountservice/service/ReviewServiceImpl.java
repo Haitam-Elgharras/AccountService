@@ -49,8 +49,14 @@ public class ReviewServiceImpl implements IReviewService{
     }
 
     @Override
-    public Review updateReview(Review review) {
-        return reviewRepository.save(review);
+    public Review updateReview(Long id, Review review) {
+        Review reviewToUpdate = reviewRepository.findById(id).orElse(null);
+        if (reviewToUpdate == null)
+            return null;
+
+        reviewToUpdate.setRating(review.getRating());
+        reviewToUpdate.setComment(review.getComment());
+        return reviewRepository.save(reviewToUpdate);
     }
 
     @Override

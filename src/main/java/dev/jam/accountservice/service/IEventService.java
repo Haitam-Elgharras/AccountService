@@ -20,4 +20,6 @@ public interface IEventService {
     Event addReviewToEvent(Long eventId, Review review);
     void deleteReviewFromEvent(Long eventId, Long reviewId);
 
+    // add category to event
+    Event addCategoryToEvent(Long eventId, Long categoryId);
 }

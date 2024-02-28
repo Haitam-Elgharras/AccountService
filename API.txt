@@ -18,11 +18,11 @@
 # Update company by id
 /companies/{id}
 
-# Delete company by id
+# Delete company from user by id
 /companies/{id}
 
 # add company to user
-/companies/{userId}
+/companies/user/{userId}
 
 # add industry to company
 /companies/{companyId}/industry/{industryId}

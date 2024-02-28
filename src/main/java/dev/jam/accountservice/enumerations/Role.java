@@ -1,5 +1,5 @@
 package dev.jam.accountservice.enumerations;
 
 public enum Role {
-    ADMIN, USER, COMPANY_OWNER
+    ROLE_ADMIN, ROLE_USER, ROLE_COMPANY_OWNER
 }

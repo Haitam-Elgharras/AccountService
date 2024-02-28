@@ -1,4 +1,4 @@
-package dev.jam.accountservice.security;
+package dev.jam.accountservice.service;
 
 import dev.jam.accountservice.config.JwtConfig;
 import dev.jam.accountservice.dao.entities.User;
@@ -11,11 +11,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.util.Date;
 import java.util.Map;
+import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
@@ -24,35 +26,36 @@ public class JwtService implements IJwtService {
     private final JwtConfig jwtConfig;
 
     @Override
-    public String getUsername(String token) {
-        return getAccessTokenClaims(token).getSubject();
+    public String extractUsername(String token) {
+        return extractClaim(token, Claims::getSubject);
     }
 
     @Override
     public Long getUserId(String token) {
-        return Long.parseLong(getAccessTokenClaims(token).get("id").toString());
+        return Long.parseLong(extractAllClaims(token).get("id").toString());
     }
 
     @Override
     public Role getUserRole(String token) {
-        return Role.valueOf(getAccessTokenClaims(token).get("role").toString());
+        return Role.valueOf(extractAllClaims(token).get("role").toString());
     }
 
     @Override
     public String generateToken(User user) {
-        return generateToken(Map.of("role", user.getRole(), "id", user.getId(), "name", user.getEmail()), user);
+        return generateToken(Map.of("role", user.getRole(), "id", user.getId(),
+                "email", user.getEmail(),"name",user.getName()), user);
     }
 
     @Override
-    public String generateToken(Map<String, Object> extraClaims, User user) {
+    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails){
 
         return Jwts
                 .builder()
                 .addClaims(extraClaims)
-                .setSubject(user.getUsername())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setSubject(userDetails.getUsername())
+                .setIssuedAt(new Date(System.currentTimeMillis())) // when this claim was created
                 .setExpiration(new Date(System.currentTimeMillis() + jwtConfig.getAccessTokenExpiredAfter()))
-                .signWith(jwtConfig.getAccessTokenSecret(), SignatureAlgorithm.HS256)
+                .signWith(jwtConfig.getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
@@ -68,19 +71,14 @@ public class JwtService implements IJwtService {
                 .compact();
     }
 
-//    @Override
-//    public String generateAccessToken(String refreshToken) {
-//        String username = getRefreshTokenClaims(refreshToken).getSubject();
-//        User user = userService.loadUserByUsername(username);
-//        return generateAccessToken(user);
-//    }
-
     @Override
     public String generateAccessToken(User user) {
         return generateToken(
-                Map.of("role", user.getRole(), "id", user.getId(), "email", user.getEmail()),
+                Map.of("role", user.getRole(),
+                        "id", user.getId(),
+                        "email", user.getEmail()),
                 user.getEmail(),
-                jwtConfig.getAccessTokenSecret(),
+                jwtConfig.getSignInKey(),
                 jwtConfig.getAccessTokenExpiredAfter()
         );
     }
@@ -88,7 +86,7 @@ public class JwtService implements IJwtService {
     @Override
     public User getUserFromToken(String jwt) {
         User user = new User();
-        Claims claims = getAccessTokenClaims(jwt);
+        Claims claims = extractAllClaims(jwt);
         user.setId(Long.parseLong(claims.get("id").toString()));
         user.setName(claims.getSubject());
         user.setRole(Role.valueOf(claims.get("role").toString()));
@@ -105,12 +103,36 @@ public class JwtService implements IJwtService {
     }
 
     // Helper method to get access token claims
-    private Claims getAccessTokenClaims(String token) {
+    private Claims extractAllClaims(String token) {
         return Jwts.parser()
-                .setSigningKey(jwtConfig.getAccessTokenSecret())
+                .setSigningKey(jwtConfig.getSignInKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    // extract a specific claim from the token
+    public <T> T extractClaim(String token, Function<Claims,T> ClaimsResolver){
+        final Claims claims = extractAllClaims(token);
+        return ClaimsResolver.apply(claims);
+    }
+
+    // validate token
+    @Override
+    public Boolean isTokenValid(String token, UserDetails userDetails){
+        final String username = extractUsername(token);
+        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    }
+
+    @Override
+    public boolean isTokenExpired(String token) {
+        assert extractExpiration(token) != null;
+        return extractExpiration(token).before(new Date());
+    }
+
+    @Override
+    public Date extractExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration);
     }
 
 }

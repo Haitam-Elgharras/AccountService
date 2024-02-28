@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -23,6 +24,7 @@ public class Event {
 //    private File file;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
+    private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "event")
     private List<Review> reviews;
@@ -36,5 +38,7 @@ public class Event {
             joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
-    private List<Category> categories;
+    private List<Category> categories = new ArrayList<>();
+
+
 }

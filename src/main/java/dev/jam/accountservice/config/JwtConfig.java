@@ -8,24 +8,21 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.security.Key;
 
-/***
- * Cette classe nous aide à obtenir les propriétés JWT du fichier application.properties,
- * afin que nous puissions modifier la configuration JWT sans entrer dans le code
- */
+import static io.jsonwebtoken.SignatureAlgorithm.HS256;
+
 @Data
-// Il faut ajouter l'annotation
-// @EnableConfigurationProperties(JwtConfig.class) dans la class BackendApplication
 @ConfigurationProperties(prefix = "jwt")
 public class JwtConfig {
-    private String accessTokenSecret;
-    private long accessTokenExpiredAfter;
-    private SignatureAlgorithm algorithm; // The algorithm used for signing the token
+    // store this secret in a secure place
+    private String accessTokenSecret = "f41205cfefdd6717494bf9764416e64935d830d1cd0330202943805b3bfde998";
+    private long accessTokenExpiredAfter = 1000*60*24; // 24 hours
+    private SignatureAlgorithm algorithm = HS256;
 
     public void setAlgorithm(String algorithm) {
         this.algorithm = SignatureAlgorithm.valueOf(algorithm);
     }
 
-    public Key getAccessTokenSecret() {
+    public Key getSignInKey() {
         // Convert the secret to a byte array
         byte[] keyBytes = Decoders.BASE64.decode(accessTokenSecret);
         return Keys.hmacShaKeyFor(keyBytes);

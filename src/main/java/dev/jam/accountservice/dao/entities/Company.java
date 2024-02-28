@@ -35,6 +35,7 @@ public class Company {
     private User user;
 
     @OneToMany(mappedBy = "company")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<Event> events;
 
 //    @Transient

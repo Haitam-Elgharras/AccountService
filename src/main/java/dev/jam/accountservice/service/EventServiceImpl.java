@@ -1,9 +1,12 @@
 package dev.jam.accountservice.service;
 
+import dev.jam.accountservice.dao.entities.Category;
 import dev.jam.accountservice.dao.entities.Event;
 import dev.jam.accountservice.dao.entities.Review;
+import dev.jam.accountservice.dao.repositories.CategoryRepository;
 import dev.jam.accountservice.dao.repositories.EventRepository;
 import dev.jam.accountservice.dao.repositories.ReviewRepository;
+import dev.jam.accountservice.exceptions.CategoryNotFoundException;
 import dev.jam.accountservice.exceptions.EventNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,10 +18,12 @@ import java.util.List;
 public class EventServiceImpl implements IEventService {
     private final EventRepository eventRepository;
     private final ReviewRepository reviewRepository;
+    private final CategoryRepository categoryRepository;
 
-    public EventServiceImpl(EventRepository eventRepository, ReviewRepository reviewRepository) {
+    public EventServiceImpl(EventRepository eventRepository, ReviewRepository reviewRepository, CategoryRepository categoryRepository) {
         this.eventRepository = eventRepository;
         this.reviewRepository = reviewRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     @Override
@@ -81,5 +86,15 @@ public class EventServiceImpl implements IEventService {
         event.getReviews().removeIf(review -> review.getId().equals(reviewId));
         eventRepository.save(event);
     }
+
+    @Override
+    // add category to event
+    public Event addCategoryToEvent(Long eventId, Long categoryId) {
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException("Event with id " + eventId + " not found"));
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new CategoryNotFoundException("Category with id " + categoryId + " not found"));
+        event.getCategories().add(category);
+        return eventRepository.save(event);
+    }
+
 
 }

@@ -12,7 +12,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
-@Entity @Data
+@Entity
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class User implements UserDetails {
@@ -21,6 +22,7 @@ public class User implements UserDetails {
     private String name;
     private String password;
     private String email;
+    @Enumerated(EnumType.STRING)
     private Role role;
     private boolean active;
 //    private String ProfileImageUrl;
@@ -47,7 +49,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return name;
+        return this.email;
     }
 
     @Override
@@ -67,7 +69,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return this.active;
+        return true;
     }
 
 }

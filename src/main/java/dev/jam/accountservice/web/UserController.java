@@ -31,12 +31,18 @@ public class UserController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN')")  
-    public List<UserDto> getAllUsers() {
-        return userMapper.usersToUserDtos(userService.getAllUsers());
+    @PreAuthorize("hasRole('USER')")
+    public List<User> getAllUsers() {
+        return userService.getAllUsers().stream().map(
+                user -> {
+                    user.setPassword(null);
+                    return user;
+                }
+        ).toList();
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('USER')")
     public User getUserById(@PathVariable Long id) {
         // check if user exists
         User user = userService.getUserById(id);
@@ -46,6 +52,7 @@ public class UserController {
         return user;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public UserDto addUser(@RequestBody User user) {
         // check if the required fields are not empty
