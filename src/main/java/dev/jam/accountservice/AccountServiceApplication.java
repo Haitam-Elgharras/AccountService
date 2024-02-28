@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 @SpringBootApplication
 @EnableConfigurationProperties(JwtConfig.class)
 @EnableFeignClients
-@CrossOrigin
 public class AccountServiceApplication {
 
     public static void main(String[] args) {
